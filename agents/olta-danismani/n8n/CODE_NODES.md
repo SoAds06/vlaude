@@ -311,7 +311,7 @@ return [{ json: { filtered_products: trimmed, profile } }];
 **Node:** Workflow 2 → Node 11
 
 ```javascript
-const SITE_DOMAIN = 'SITE_DOMAIN_BURAYA'; // örn: balikcidunyasi.com
+const SITE_DOMAIN = 'www.sihirliolta.com';
 
 const anthropicResponse = $input.first().json;
 

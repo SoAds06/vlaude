@@ -5,9 +5,9 @@ Agent buradan okur, asla değiştirmez.
 ## Zorunlu Alan
 
 ```
-FEED_URL=https://[domain]/googlebase.xml
-SITE_DOMAIN=https://[domain].com
-CART_BASE_URL=https://[domain].com/sepet?ekle=
+FEED_URL=https://sihirliolta.com/xml/googleshopping.com.php
+SITE_DOMAIN=https://www.sihirliolta.com
+CART_BASE_URL=https://www.sihirliolta.com/sepet?ekle=
 ```
 
 ## Feed URL'ini Nasıl Bulursun?
