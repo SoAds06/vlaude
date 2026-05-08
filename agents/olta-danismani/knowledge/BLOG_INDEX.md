@@ -13,6 +13,10 @@ Agent her müşteri isteğinde bu dizini okur ve müşteri profiline uyan yazıl
 | Dosya | Başlık | Disiplin | Hedef Balık | Ortam | Deneyim |
 |-------|--------|----------|-------------|-------|---------|
 | blogs/spin-levrek-avi.md | Spin At-Çek Tekniği ile Levrek Avı | spin | levrek | kıyı, açık deniz, nehir ağzı | tümü |
+| blogs/lufer-avi.md | Lüfer Avı için Olta Takımı Tavsiyelerimiz | spin | lüfer | kıyı, açık deniz | tümü |
+| blogs/lrf-light-rock-fishing.md | LRF - Light Rock Fishing Tekniği ile Balık Avı | lrf | levrek, istavrit, kolyoz, çinekop, karagöz, çupra, eşkina | kıyı | tümü |
+| blogs/spin-genel-rehber.md | Spin At Çek Tekniği — Genel Rehber | spin | genel | genel | tümü |
+| blogs/kiyidan-yemli-av.md | Kıyıdan Yemli Balık Avı — Başlangıç Rehberi | yemli | levrek, eşkina, karagöz, kefal, sazan, turna, alabalık | kıyı, göl, nehir | beginner |
 
 ---
 

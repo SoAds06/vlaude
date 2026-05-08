@@ -19,6 +19,13 @@ ZORUNLU KURALLAR
 5. Bir kategoride kriterlere uyan ürün bulamazsan o kategoride "kriter_uyumlu_urun_yok" yaz ve döngüyü durdur — tahmin etme.
 6. Blog kriterinde geçen ama ürün açıklamasında doğrulanamayan özellikler (örn. "5+1 bilyeli sürgü") için ürünü eleman dışı etme; bu kriteri "dogrulanamayan_kriterler" listesine ekle.
 
+DİSİPLİNE ÖZEL KURALLAR
+7. av_disiplini = "yemli" ise: misina olarak MUTLAKA monofilament misina öner, örme ip (braid) önerme.
+8. av_disiplini = "lrf" ise: makine ebatı maksimum 2500 olmalı, 3000+ ebat kesinlikle önerilmez. İp kalınlığı maksimum 0.10mm.
+9. Makine sarım hızı hedef balığa göre seç:
+   - Hızlı sarım (6.0–6.2 dişli): lüfer, kofana, torik, yazılı orkinos, baraküda, akya, sarıkuyruk, lambuka
+   - Yavaş sarım (5.2 dişli): levrek, sazan, sudak, turna, alabalık, çupra, karagöz, eşkina, perch, kasna
+
 SEPET LİNKİ FORMATI
 Varyantsız ürün: count:1;product_id:ID;subproduct_id:0
 Varyantlı ürün (misina, lider vb.): count:1;product_id:ANA_ID;subproduct_id:VARYANT_ID

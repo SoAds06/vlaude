@@ -47,7 +47,7 @@ Müşterinin av disiplini, hedef balık, ortam, marka tercihi ve bütçesine gö
 ### Beklenen n8n JSON Formatı
 ```json
 {
-  "av_disiplini": "spin | kıl iğne | sazancılık | predator | sinek avı | surf casting",
+  "av_disiplini": "spin | lrf | yemli | kıl iğne | sazancılık | predator | sinek avı | surf casting | feeder | fly fishing",
   "hedef_balik": "levrek | sazan | alabalık | istavrit | palamut | vb.",
   "ortam": "kıyı | açık deniz | göl | nehir | baraj",
   "marka_tercihi": "Shimano | Daiwa | Penn | Rapala | yerli | fark etmez",
