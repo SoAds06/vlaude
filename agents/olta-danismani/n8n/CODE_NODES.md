@@ -346,16 +346,20 @@ return [{ json: { filtered_products: trimmed, profile } }];
 ```javascript
 const SITE_DOMAIN = 'www.sihirliolta.com';
 
-const anthropicResponse = $input.first().json;
+const response = $input.first().json;
 
-// Claude'un text yanıtını al
+// Gemini ve Anthropic yanıt formatlarını destekle
 let rawText = '';
-if (anthropicResponse.content && anthropicResponse.content[0]) {
-  rawText = anthropicResponse.content[0].text || '';
-} else if (anthropicResponse.text) {
-  rawText = anthropicResponse.text;
+if (response.candidates && response.candidates[0]) {
+  // Gemini formatı
+  rawText = response.candidates[0].content.parts[0].text || '';
+} else if (response.content && response.content[0]) {
+  // Anthropic formatı
+  rawText = response.content[0].text || '';
+} else if (response.text) {
+  rawText = response.text;
 } else {
-  rawText = JSON.stringify(anthropicResponse);
+  rawText = JSON.stringify(response);
 }
 
 // JSON parse et (Claude bazen açıklama ekleyebilir)
