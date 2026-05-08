@@ -348,9 +348,12 @@ const SITE_DOMAIN = 'www.sihirliolta.com';
 
 const response = $input.first().json;
 
-// Gemini ve Anthropic yanıt formatlarını destekle
+// Groq/OpenAI, Gemini ve Anthropic yanıt formatlarını destekle
 let rawText = '';
-if (response.candidates && response.candidates[0]) {
+if (response.choices && response.choices[0]) {
+  // Groq / OpenAI formatı
+  rawText = response.choices[0].message.content || '';
+} else if (response.candidates && response.candidates[0]) {
   // Gemini formatı
   rawText = response.candidates[0].content.parts[0].text || '';
 } else if (response.content && response.content[0]) {
