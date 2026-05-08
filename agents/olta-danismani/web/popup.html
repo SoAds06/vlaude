@@ -6,53 +6,22 @@
   <title>Olta Takımı Danışmanı — Sihirli Olta</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-
-    /* Tetikleyici buton */
-    #so-trigger {
-      background: #1a6fe8;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    #so-trigger:hover { background: #1560d0; }
-
-    /* Karartma */
-    #so-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    #so-overlay.active { display: flex; }
-
-    /* Popup kutusu */
-    #so-popup {
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #fff;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 92vh;
-      overflow-y: auto;
-      padding: 36px 32px 32px;
-      position: relative;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+      min-height: 100vh;
+    }
+
+    #so-popup {
+      padding: 32px 28px 28px;
+      min-height: 100vh;
     }
 
     /* Kapat */
     #so-close {
       position: absolute;
-      top: 18px;
-      right: 20px;
+      top: 16px;
+      right: 18px;
       background: #f2f2f2;
       border: none;
       border-radius: 50%;
@@ -64,17 +33,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      line-height: 1;
     }
     #so-close:hover { background: #e0e0e0; }
 
-    /* Başlık alanı */
-    .so-head { margin-bottom: 24px; }
-    .so-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
-    .so-subtitle { font-size: 14px; color: #666; line-height: 1.5; }
+    /* Başlık */
+    .so-head { margin-bottom: 22px; padding-right: 36px; }
+    .so-title { font-size: 21px; font-weight: 700; color: #111; margin-bottom: 5px; }
+    .so-subtitle { font-size: 13px; color: #666; line-height: 1.5; }
 
-    /* Form alanları */
-    .so-field { margin-bottom: 14px; }
+    /* Form */
+    .so-field { margin-bottom: 13px; }
     .so-field label {
       display: block;
       font-size: 13px;
@@ -99,13 +67,10 @@
     .so-field select:focus,
     .so-field input:focus { border-color: #1a6fe8; background: #fff; }
 
-    /* 2 kolonlu alan grubu */
-    .so-row { display: flex; gap: 12px; }
+    .so-row { display: flex; gap: 10px; }
     .so-row .so-field { flex: 1; }
-
     .so-req { color: #d33; margin-left: 2px; }
 
-    /* Gönder butonu */
     .so-btn-primary {
       width: 100%;
       background: #1a6fe8;
@@ -123,11 +88,7 @@
     .so-btn-primary:disabled { background: #93b9f7; cursor: not-allowed; }
 
     /* Yükleme */
-    #so-loading {
-      display: none;
-      text-align: center;
-      padding: 52px 0;
-    }
+    #so-loading { display: none; text-align: center; padding: 60px 0; }
     #so-loading.active { display: block; }
     .so-spinner {
       width: 52px;
@@ -148,12 +109,11 @@
     .so-product-card {
       border: 1.5px solid #eaeaea;
       border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
+      padding: 13px 15px;
+      margin-bottom: 9px;
       transition: border-color 0.15s;
     }
     .so-product-card:hover { border-color: #c0d4f7; }
-
     .so-product-cat {
       font-size: 11px;
       font-weight: 700;
@@ -162,38 +122,22 @@
       color: #1a6fe8;
       margin-bottom: 3px;
     }
-    .so-product-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 6px;
-    }
-    .so-product-reason {
-      font-size: 13px;
-      color: #555;
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-    .so-product-price {
-      font-size: 16px;
-      font-weight: 700;
-      color: #1a1a1a;
-    }
+    .so-product-name { font-size: 15px; font-weight: 600; color: #111; margin-bottom: 5px; }
+    .so-product-reason { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 7px; }
+    .so-product-price { font-size: 16px; font-weight: 700; color: #1a1a1a; }
 
-    /* Toplam bar */
     .so-total-bar {
       background: #f0f6ff;
       border-radius: 12px;
-      padding: 16px 20px;
-      margin: 18px 0 14px;
+      padding: 15px 18px;
+      margin: 16px 0 13px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .so-total-label { font-size: 14px; color: #444; font-weight: 500; }
-    .so-total-amount { font-size: 24px; font-weight: 800; color: #111; }
+    .so-total-amount { font-size: 23px; font-weight: 800; color: #111; }
 
-    /* Sepet butonu */
     .so-cart-btn {
       display: block;
       width: 100%;
@@ -212,12 +156,11 @@
     .so-result-note {
       font-size: 12px;
       color: #999;
-      margin-top: 12px;
+      margin-top: 11px;
       text-align: center;
       line-height: 1.5;
     }
 
-    /* Yeniden dene / yeni öneri */
     .so-btn-ghost {
       background: none;
       border: 1.5px solid #1a6fe8;
@@ -232,160 +175,140 @@
     .so-btn-ghost:hover { background: #f0f6ff; }
 
     /* Hata */
-    #so-error { display: none; text-align: center; padding: 40px 0; }
+    #so-error { display: none; text-align: center; padding: 48px 0; }
     #so-error.active { display: block; }
     .so-error-icon { font-size: 44px; margin-bottom: 14px; }
     .so-error-title { font-size: 17px; font-weight: 600; color: #333; margin-bottom: 6px; }
     .so-error-detail { font-size: 13px; color: #888; margin-bottom: 20px; line-height: 1.5; }
-
-    /* Adım gizleme */
-    #so-form-step { display: block; }
-    #so-form-step.hidden,
-    #so-loading.hidden,
-    #so-results.hidden,
-    #so-error.hidden { display: none !important; }
   </style>
 </head>
 <body>
+<div id="so-popup" style="position:relative">
+  <button id="so-close" aria-label="Kapat">&#x2715;</button>
 
-<!-- Bu butonu sayfanın istediğin yerine koy -->
-<button id="so-trigger">Olta Takımı Onerisi Al</button>
+  <!-- ADIM 1: FORM -->
+  <div id="so-form-step">
+    <div class="so-head">
+      <div class="so-title">Sana Ozel Olta Takimi</div>
+      <div class="so-subtitle">Birkaç soruyu yanıtla, stoktaki ürünler arasından bütçene ve avlanma tarzına uygun ekipmanı seçelim.</div>
+    </div>
 
-<!-- Overlay ve popup -->
-<div id="so-overlay">
-  <div id="so-popup">
-    <button id="so-close" aria-label="Kapat">&#x2715;</button>
-
-    <!-- ADIM 1: FORM -->
-    <div id="so-form-step">
-      <div class="so-head">
-        <div class="so-title">Sana Ozel Olta Takimi</div>
-        <div class="so-subtitle">Birkaç soruyu yanıtla, stoktaki ürünler arasından bütçene ve avlanma tarzına uygun ekipmanı seçelim.</div>
+    <form id="so-form" novalidate>
+      <div class="so-field">
+        <label for="av_disiplini">Av Disiplini <span class="so-req">*</span></label>
+        <select id="av_disiplini" name="av_disiplini" required>
+          <option value="">Seciniz...</option>
+          <option value="spin">Spin (At-Çek)</option>
+          <option value="sazancılık">Sazancılık</option>
+          <option value="feeder">Feeder</option>
+          <option value="surf casting">Surf Casting</option>
+          <option value="fly fishing">Fly Fishing (Sinek Oltası)</option>
+        </select>
       </div>
 
-      <form id="so-form" novalidate>
+      <div class="so-row">
         <div class="so-field">
-          <label for="av_disiplini">Av Disiplini <span class="so-req">*</span></label>
-          <select id="av_disiplini" name="av_disiplini" required>
+          <label for="hedef_balik">Hedef Balık</label>
+          <input type="text" id="hedef_balik" name="hedef_balik" placeholder="orн: levrek, sazan">
+        </div>
+        <div class="so-field">
+          <label for="ortam">Avlanma Ortami <span class="so-req">*</span></label>
+          <select id="ortam" name="ortam" required>
             <option value="">Seciniz...</option>
-            <option value="spin">Spin (At-Çek)</option>
-            <option value="sazancılık">Sazancılık</option>
-            <option value="feeder">Feeder</option>
-            <option value="surf casting">Surf Casting</option>
-            <option value="fly fishing">Fly Fishing (Sinek Oltası)</option>
+            <option value="kıyı">Kiyi (Deniz)</option>
+            <option value="açık deniz">Açık Deniz</option>
+            <option value="nehir ağzı">Nehir Agzi</option>
+            <option value="nehir">Nehir / Akarsu</option>
+            <option value="göl">Göl / Baraj</option>
           </select>
         </div>
+      </div>
 
-        <div class="so-row">
-          <div class="so-field">
-            <label for="hedef_balik">Hedef Balık</label>
-            <input type="text" id="hedef_balik" name="hedef_balik" placeholder="orн: levrek, sazan">
-          </div>
-          <div class="so-field">
-            <label for="ortam">Avlanma Ortami <span class="so-req">*</span></label>
-            <select id="ortam" name="ortam" required>
-              <option value="">Seciniz...</option>
-              <option value="kıyı">Kiyi (Deniz)</option>
-              <option value="açık deniz">Açık Deniz</option>
-              <option value="nehir ağzı">Nehir Agzi</option>
-              <option value="nehir">Nehir / Akarsu</option>
-              <option value="göl">Göl / Baraj</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="so-row">
-          <div class="so-field">
-            <label for="butce_max">Maks. Bütçe (₺) <span class="so-req">*</span></label>
-            <input type="number" id="butce_max" name="butce_max" placeholder="orн: 5000" min="0" required>
-          </div>
-          <div class="so-field">
-            <label for="deneyim">Deneyim</label>
-            <select id="deneyim" name="deneyim">
-              <option value="beginner">Baslangıç</option>
-              <option value="intermediate" selected>Orta</option>
-              <option value="advanced">Ileri</option>
-            </select>
-          </div>
-        </div>
-
+      <div class="so-row">
         <div class="so-field">
-          <label for="marka_tercihi">Marka Tercihi <span style="font-weight:400;color:#999">(opsiyonel)</span></label>
-          <input type="text" id="marka_tercihi" name="marka_tercihi" placeholder="orн: Shimano, Daiwa — bos birakabilirsin">
+          <label for="butce_max">Maks. Bütçe (₺) <span class="so-req">*</span></label>
+          <input type="number" id="butce_max" name="butce_max" placeholder="orн: 5000" min="0" required>
         </div>
-
-        <button type="submit" class="so-btn-primary">Takimimı Öner</button>
-      </form>
-    </div>
-
-    <!-- ADIM 2: YÜKLEME -->
-    <div id="so-loading">
-      <div class="so-spinner"></div>
-      <div class="so-loading-text">Stok analiz ediliyor, takimin hazirlaniyor…</div>
-    </div>
-
-    <!-- ADIM 3: SONUÇLAR -->
-    <div id="so-results">
-      <div class="so-head">
-        <div class="so-title">Onerilen Takimin</div>
-        <div class="so-subtitle" id="so-results-meta"></div>
+        <div class="so-field">
+          <label for="deneyim">Deneyim</label>
+          <select id="deneyim" name="deneyim">
+            <option value="beginner">Baslangic</option>
+            <option value="intermediate" selected>Orta</option>
+            <option value="advanced">Ileri</option>
+          </select>
+        </div>
       </div>
-      <div id="so-products-list"></div>
-      <div class="so-total-bar">
-        <div class="so-total-label">Toplam Sepet</div>
-        <div class="so-total-amount" id="so-total-price"></div>
-      </div>
-      <a href="#" id="so-cart-btn" class="so-cart-btn" target="_blank">Tümünü Sepete Ekle</a>
-      <div class="so-result-note" id="so-result-note"></div>
-      <div style="text-align:center;margin-top:20px">
-        <button class="so-btn-ghost" id="so-restart">Yeni Oneri Al</button>
-      </div>
-    </div>
 
-    <!-- HATA -->
-    <div id="so-error">
-      <div class="so-error-icon">&#9888;&#xFE0F;</div>
-      <div class="so-error-title" id="so-error-title">Bir sorun olustu.</div>
-      <div class="so-error-detail" id="so-error-detail"></div>
-      <button class="so-btn-ghost" id="so-retry">Tekrar Dene</button>
-    </div>
+      <div class="so-field">
+        <label for="marka_tercihi">Marka Tercihi <span style="font-weight:400;color:#999">(opsiyonel)</span></label>
+        <input type="text" id="marka_tercihi" name="marka_tercihi" placeholder="orн: Shimano, Daiwa — bos birakabilirsin">
+      </div>
 
+      <button type="submit" class="so-btn-primary">Takimimı Öner</button>
+    </form>
+  </div>
+
+  <!-- ADIM 2: YÜKLEME -->
+  <div id="so-loading">
+    <div class="so-spinner"></div>
+    <div class="so-loading-text">Stok analiz ediliyor, takimin hazirlaniyor…</div>
+  </div>
+
+  <!-- ADIM 3: SONUÇLAR -->
+  <div id="so-results">
+    <div class="so-head">
+      <div class="so-title">Onerilen Takimin</div>
+      <div class="so-subtitle" id="so-results-meta"></div>
+    </div>
+    <div id="so-products-list"></div>
+    <div class="so-total-bar">
+      <div class="so-total-label">Toplam Sepet</div>
+      <div class="so-total-amount" id="so-total-price"></div>
+    </div>
+    <a href="#" id="so-cart-btn" class="so-cart-btn" target="_top">Tümünü Sepete Ekle</a>
+    <div class="so-result-note" id="so-result-note"></div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="so-btn-ghost" id="so-restart">Yeni Oneri Al</button>
+    </div>
+  </div>
+
+  <!-- HATA -->
+  <div id="so-error">
+    <div class="so-error-icon">&#9888;</div>
+    <div class="so-error-title" id="so-error-title">Bir sorun olustu.</div>
+    <div class="so-error-detail" id="so-error-detail"></div>
+    <button class="so-btn-ghost" id="so-retry">Tekrar Dene</button>
   </div>
 </div>
 
 <script>
-  // ─── KONFIGÜRASYON ─────────────────────────────────────────────
+  // ─── KONFIGÜRASYON ───────────────────────────────────────────
   const WEBHOOK_URL = 'N8N_WEBHOOK_URL_BURAYA';
-  // n8n Cloud'da Workflow 2 > Webhook node'unun "Production URL"ini buraya yaz
-  // Ornek: https://soadsclaude.app.n8n.cloud/webhook/olta-danismani
-  // ──────────────────────────────────────────────────────────────
+  // n8n Cloud > Workflow 2 > Webhook node > Production URL
+  // Ornek: https://kullanici.app.n8n.cloud/webhook/olta-danismani
+  // ────────────────────────────────────────────────────────────
 
-  const overlay   = document.getElementById('so-overlay');
-  const formStep  = document.getElementById('so-form-step');
-  const loading   = document.getElementById('so-loading');
-  const results   = document.getElementById('so-results');
-  const errorDiv  = document.getElementById('so-error');
-  const allSteps  = [formStep, loading, results, errorDiv];
+  const formStep = document.getElementById('so-form-step');
+  const loading  = document.getElementById('so-loading');
+  const results  = document.getElementById('so-results');
+  const errorDiv = document.getElementById('so-error');
+  const allSteps = [formStep, loading, results, errorDiv];
 
   function showOnly(el) {
     allSteps.forEach(s => { s.style.display = 'none'; });
     el.style.display = 'block';
+    // iframe yüksekliğini parent'a bildir
+    window.parent.postMessage({ type: 'so-resize', height: document.body.scrollHeight }, '*');
   }
 
-  // Aç / kapat
-  document.getElementById('so-trigger').addEventListener('click', () => {
-    overlay.classList.add('active');
-    showOnly(formStep);
+  // Kapat butonu — parent sayfaya mesaj gönder
+  document.getElementById('so-close').addEventListener('click', () => {
+    window.parent.postMessage({ type: 'so-close' }, '*');
   });
-  document.getElementById('so-close').addEventListener('click', closePopup);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closePopup(); });
-  function closePopup() { overlay.classList.remove('active'); }
 
-  // Yeniden başlat
   document.getElementById('so-restart').addEventListener('click', () => showOnly(formStep));
   document.getElementById('so-retry').addEventListener('click', () => showOnly(formStep));
 
-  // Form gönder
   document.getElementById('so-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -439,7 +362,6 @@
   }
 
   function renderResults(data) {
-    // Ürün kartları
     const list = document.getElementById('so-products-list');
     list.innerHTML = '';
     (data.oneriler || []).forEach(o => {
@@ -454,20 +376,16 @@
       list.appendChild(card);
     });
 
-    // Toplam
     document.getElementById('so-total-price').textContent = formatTL(data.toplam_fiyat);
 
-    // Sepet butonu
     const cartBtn = document.getElementById('so-cart-btn');
     cartBtn.href = data.sepet_linki || '#';
 
-    // Meta bilgi
     const profil = data.musteri_profili || {};
     document.getElementById('so-results-meta').textContent =
       [profil.av_disiplini, profil.ortam, formatTL(profil.butce_max) + ' bütçe']
         .filter(Boolean).join(' · ');
 
-    // Not
     document.getElementById('so-result-note').textContent = data.not || '';
   }
 
@@ -480,7 +398,11 @@
 
   function esc(str) {
     if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 </script>
 </body>

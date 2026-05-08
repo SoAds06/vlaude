@@ -1,0 +1,93 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     Olta Danışmanı Widget — T-Soft Embed Snippet
+     Bu kodu T-Soft admin > Özel HTML / Tema Düzenleyici'ye yapıştır.
+     IFRAME_URL satırını kendi GitHub Pages URL'inle değiştir.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Tetikleyici buton — istediğin yere taşıyabilirsin -->
+<button id="olta-open-btn" onclick="oltaAc()">Olta Takimi Onerisi Al</button>
+
+<!-- Overlay + iframe -->
+<div id="olta-overlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  z-index:99999;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+">
+  <div style="position:relative;width:100%;max-width:520px;">
+    <!-- Dış kapat butonu (overlay'in üstünde) -->
+    <button onclick="oltaKapat()" style="
+      position:absolute;
+      top:-40px;
+      right:0;
+      background:none;
+      border:none;
+      color:#fff;
+      font-size:32px;
+      cursor:pointer;
+      line-height:1;
+    ">&#x2715;</button>
+
+    <iframe
+      id="olta-iframe"
+      src="IFRAME_URL_BURAYA"
+      style="
+        width:100%;
+        height:640px;
+        border:none;
+        border-radius:20px;
+        display:block;
+        background:#fff;
+      "
+      title="Olta Takımı Danışmanı"
+      loading="lazy"
+    ></iframe>
+  </div>
+</div>
+
+<style>
+  #olta-open-btn {
+    background: #1a6fe8;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #olta-open-btn:hover { background: #1560d0; }
+  #olta-overlay.active { display: flex !important; }
+</style>
+
+<script>
+  function oltaAc() {
+    document.getElementById('olta-overlay').classList.add('active');
+  }
+  function oltaKapat() {
+    document.getElementById('olta-overlay').classList.remove('active');
+  }
+
+  // Overlay'e tıklayınca kapat
+  document.getElementById('olta-overlay').addEventListener('click', function(e) {
+    if (e.target === this) oltaKapat();
+  });
+
+  // iframe'den gelen mesajları dinle
+  window.addEventListener('message', function(e) {
+    if (!e.data || !e.data.type) return;
+    if (e.data.type === 'so-close') {
+      oltaKapat();
+    }
+    // iframe içerik yüksekliğine göre boyutlandır
+    if (e.data.type === 'so-resize' && e.data.height) {
+      const iframe = document.getElementById('olta-iframe');
+      iframe.style.height = Math.min(e.data.height + 16, window.innerHeight * 0.9) + 'px';
+    }
+  });
+</script>
