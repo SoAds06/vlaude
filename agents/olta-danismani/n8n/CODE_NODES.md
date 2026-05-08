@@ -382,12 +382,16 @@ try {
   }];
 }
 
-// Sepet linki yoksa oluştur
-if (!result.sepet_linki && result.oneriler && result.oneriler.length > 0) {
+// Sepet linkini her zaman oneriler'deki gerçek product_id'lerden yeniden oluştur
+// LLM'in ürettiği linke güvenme — ID'leri yanlış yazabiliyor
+if (result.oneriler && result.oneriler.length > 0) {
   const parts = result.oneriler
+    .filter(o => o.product_id && o.product_id !== 'kriter_uyumlu_urun_yok')
     .map(o => `count:1;product_id:${o.product_id};subproduct_id:${o.subproduct_id || '0'}`)
     .join('-');
-  result.sepet_linki = `https://${SITE_DOMAIN}/srv/service/cart/create-cart-from-url/${parts}`;
+  if (parts) {
+    result.sepet_linki = `https://${SITE_DOMAIN}/srv/service/cart/create-cart-from-url/${parts}`;
+  }
 }
 
 return [{ json: result }];
