@@ -56,7 +56,7 @@ function parseXML(xml, forceNoVariant) {
     items.push({
       product_id,
       subproduct_id,
-      title: getTag('title'),
+      title: getGTag('title') || getTag('title'),
       price,
       availability: 'in stock',
       brand: getGTag('brand'),
