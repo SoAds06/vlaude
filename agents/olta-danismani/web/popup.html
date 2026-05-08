@@ -55,12 +55,23 @@
       position: relative;
       z-index: 1;
     }
-    .so-mascot-img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+    .so-mascot-wrap {
       flex-shrink: 0;
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .so-mascot-img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
     }
     .so-header-text {}
     .so-header-badge {
@@ -356,7 +367,9 @@
   <div class="so-header">
     <button id="so-close" aria-label="Kapat">&#x2715;</button>
     <div class="so-header-inner">
-      <img src="maskot.png" alt="Sihirli Olta AI" class="so-mascot-img">
+      <div class="so-mascot-wrap">
+        <img src="olti-1.png" alt="Sihirli Olta AI" class="so-mascot-img">
+      </div>
       <div class="so-header-text">
         <div class="so-header-badge">AI Danışman</div>
         <div class="so-header-title">Sana Özel<br>Olta Takımı</div>
@@ -442,7 +455,7 @@
     <!-- ADIM 3: SONUÇLAR -->
     <div id="so-results">
       <div class="so-results-hero">
-        <img src="maskot.png" alt="Sihirli Olta AI">
+        <img src="olti-1.png" alt="Sihirli Olta AI">
         <div class="so-results-hero-text">
           <div class="rh-title">Takımın hazır!</div>
           <div class="rh-sub" id="so-results-meta"></div>
