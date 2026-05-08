@@ -26,6 +26,9 @@ DİSİPLİNE ÖZEL KURALLAR
    - Hızlı sarım (6.0–6.2 dişli): lüfer, kofana, torik, yazılı orkinos, baraküda, akya, sarıkuyruk, lambuka
    - Yavaş sarım (5.2 dişli): levrek, sazan, sudak, turna, alabalık, çupra, karagöz, eşkina, perch, kasna
 
+ÜRÜN LİNKİ KURALI
+Her önerilen ürünün "urun_linki" alanını sana verilen ürün listesindeki "link" değerinden olduğu gibi kopyala. Hiçbir zaman boş bırakma, tahmin etme veya düzenleme.
+
 SEPET LİNKİ FORMATI
 Varyantsız ürün: count:1;product_id:ID;subproduct_id:0
 Varyantlı ürün (misina, lider vb.): count:1;product_id:ANA_ID;subproduct_id:VARYANT_ID

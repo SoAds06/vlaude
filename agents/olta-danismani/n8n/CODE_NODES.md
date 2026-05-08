@@ -61,7 +61,7 @@ function parseXML(xml, forceNoVariant) {
       availability: 'in stock',
       brand: getGTag('brand'),
       product_type: getGTag('product_type'),
-      link: getTag('link'),
+      link: getGTag('link') || getTag('link'),
       description: getTag('description').substring(0, 300)
     });
   }
