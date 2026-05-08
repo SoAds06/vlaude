@@ -35,11 +35,17 @@ while ((match = itemRegex.exec(xml)) !== null) {
   const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
   if (price === 0) continue;
 
-  const id = getGTag('id');
-  if (!id) continue;
+  const rawId = getGTag('id');
+  if (!rawId) continue;
+
+  const itemGroupId = getGTag('item_group_id');
+  const isVariant = itemGroupId && itemGroupId !== rawId;
+  const product_id = isVariant ? itemGroupId : rawId;
+  const subproduct_id = isVariant ? rawId : '0';
 
   items.push({
-    id,
+    product_id,
+    subproduct_id,
     title: getTag('title'),
     price,
     availability: 'in stock',
@@ -293,7 +299,8 @@ if (brandPref !== 'fark etmez') {
 const trimmed = {};
 Object.keys(categories).forEach(cat => {
   trimmed[cat] = categories[cat].slice(0, 15).map(p => ({
-    id: p.id,
+    product_id: p.product_id,
+    subproduct_id: p.subproduct_id,
     title: p.title,
     price: p.price,
     brand: p.brand || '',
@@ -344,8 +351,10 @@ try {
 
 // Sepet linki yoksa oluştur
 if (!result.sepet_linki && result.oneriler && result.oneriler.length > 0) {
-  const ids = result.oneriler.map(o => `${o.urun_id}:1`).join(',');
-  result.sepet_linki = `https://${SITE_DOMAIN}/sepet?ekle=${ids}`;
+  const parts = result.oneriler
+    .map(o => `count:1;product_id:${o.product_id};subproduct_id:${o.subproduct_id || '0'}`)
+    .join('-');
+  result.sepet_linki = `https://${SITE_DOMAIN}/srv/service/cart/create-cart-from-url/${parts}`;
 }
 
 return [{ json: result }];

@@ -20,7 +20,10 @@ ZORUNLU KURALLAR
 6. Blog kriterinde geçen ama ürün açıklamasında doğrulanamayan özellikler (örn. "5+1 bilyeli sürgü") için ürünü eleman dışı etme; bu kriteri "dogrulanamayan_kriterler" listesine ekle.
 
 SEPET LİNKİ FORMATI
-https://www.sihirliolta.com/sepet?ekle=[urun_id1]:1,[urun_id2]:1,[urun_id3]:1,...
+Varyantsız ürün: count:1;product_id:ID;subproduct_id:0
+Varyantlı ürün (misina, lider vb.): count:1;product_id:ANA_ID;subproduct_id:VARYANT_ID
+Çoklu ürün: araya - koy
+Tam URL: https://www.sihirliolta.com/srv/service/cart/create-cart-from-url/count:1;product_id:111;subproduct_id:0-count:1;product_id:222;subproduct_id:333
 
 YANIT FORMATI
 Yalnızca aşağıdaki JSON formatında yanıt ver. Başka açıklama, özet veya markdown ekleme — sadece ham JSON:
@@ -37,7 +40,8 @@ Yalnızca aşağıdaki JSON formatında yanıt ver. Başka açıklama, özet vey
     {
       "kategori": "Olta Kamışı",
       "urun_adi": "...",
-      "urun_id": "...",
+      "product_id": "...",
+      "subproduct_id": "0",
       "urun_linki": "...",
       "fiyat": 0,
       "eslesen_kriterler": ["kriter 1", "kriter 2"],
@@ -45,7 +49,7 @@ Yalnızca aşağıdaki JSON formatında yanıt ver. Başka açıklama, özet vey
     }
   ],
   "toplam_fiyat": 0,
-  "sepet_linki": "https://www.sihirliolta.com/sepet?ekle=...",
+  "sepet_linki": "https://www.sihirliolta.com/srv/service/cart/create-cart-from-url/...",
   "alternatif_sepet_linki": null,
   "dogrulanamayan_kriterler": [],
   "not": "..."
