@@ -36,8 +36,36 @@
     }
     #so-close:hover { background: #e0e0e0; }
 
+    /* Maskot */
+    .so-mascot-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, #f0f9f0 0%, #e8f4ff 100%);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+    .so-mascot-wrap img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .so-mascot-text .so-mascot-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 3px;
+    }
+    .so-mascot-text .so-mascot-desc {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.4;
+    }
+
     /* Başlık */
-    .so-head { margin-bottom: 22px; padding-right: 36px; }
+    .so-head { margin-bottom: 18px; padding-right: 36px; }
     .so-title { font-size: 21px; font-weight: 700; color: #111; margin-bottom: 5px; }
     .so-subtitle { font-size: 13px; color: #666; line-height: 1.5; }
 
@@ -188,6 +216,14 @@
 
   <!-- ADIM 1: FORM -->
   <div id="so-form-step">
+    <div class="so-mascot-wrap">
+      <img src="maskot.png" alt="Sihirli Olta AI Danışmanı">
+      <div class="so-mascot-text">
+        <div class="so-mascot-title">Merhaba! Ben Sihirli Olta AI'yım.</div>
+        <div class="so-mascot-desc">Sana en uygun olta takımını bulmak için birkaç soru sormam gerekiyor. Hazır mısın?</div>
+      </div>
+    </div>
+
     <div class="so-head">
       <div class="so-title">Sana Ozel Olta Takimi</div>
       <div class="so-subtitle">Birkaç soruyu yanıtla, stoktaki ürünler arasından bütçene ve avlanma tarzına uygun ekipmanı seçelim.</div>
@@ -256,6 +292,13 @@
 
   <!-- ADIM 3: SONUÇLAR -->
   <div id="so-results">
+    <div class="so-mascot-wrap" style="margin-bottom:16px">
+      <img src="maskot.png" alt="Sihirli Olta AI Danışmanı">
+      <div class="so-mascot-text">
+        <div class="so-mascot-title">Takimin hazır!</div>
+        <div class="so-mascot-desc">Blog rehberlerimize ve stoğumuza göre sana özel seçtim.</div>
+      </div>
+    </div>
     <div class="so-head">
       <div class="so-title">Onerilen Takimin</div>
       <div class="so-subtitle" id="so-results-meta"></div>
