@@ -4,63 +4,89 @@ Her script kendi node'una kopyala-yapıştır. n8n'de "Code" node, JavaScript ku
 
 ---
 
-## 1. XML Parser
-**Node:** Workflow 1 → Node 3
+## 1. XML Parser (İki Feed — Merge)
+**Node:** Workflow 1 → Node 4
+Node 2'nin adı "Feed Standard", Node 3'ün adı "Feed Variant" olmalı.
 
 ```javascript
-const xml = $input.first().json.data;
-const items = [];
+// Feed 1: varyantsız ürünler (kamış, makine vb.)
+const xml1 = $('Feed Standard').first().json.data;
+// Feed 2: varyantlı ürünler (misina, lider vb.)
+const xml2 = $input.first().json.data;
 
-// Tüm <item> elementlerini bul
-const itemRegex = /<item>([\s\S]*?)<\/item>/g;
-let match;
+function parseXML(xml, forceNoVariant) {
+  const items = [];
+  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  let match;
 
-while ((match = itemRegex.exec(xml)) !== null) {
-  const item = match[1];
+  while ((match = itemRegex.exec(xml)) !== null) {
+    const item = match[1];
 
-  const getTag = (tag) => {
-    const m = item.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/${tag}>|<${tag}[^>]*>([^<]*)<\/${tag}>`));
-    return m ? (m[1] || m[2] || '').trim() : '';
-  };
+    const getTag = (tag) => {
+      const m = item.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/${tag}>|<${tag}[^>]*>([^<]*)<\/${tag}>`));
+      return m ? (m[1] || m[2] || '').trim() : '';
+    };
 
-  const getGTag = (tag) => {
-    const m = item.match(new RegExp(`<g:${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/g:${tag}>|<g:${tag}[^>]*>([^<]*)<\/g:${tag}>`));
-    return m ? (m[1] || m[2] || '').trim() : '';
-  };
+    const getGTag = (tag) => {
+      const m = item.match(new RegExp(`<g:${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/g:${tag}>|<g:${tag}[^>]*>([^<]*)<\/g:${tag}>`));
+      return m ? (m[1] || m[2] || '').trim() : '';
+    };
 
-  const availability = getGTag('availability');
-  if (availability !== 'in stock' && availability !== 'in_stock') continue;
+    const availability = getGTag('availability');
+    if (availability !== 'in stock' && availability !== 'in_stock') continue;
 
-  const priceStr = getGTag('price');
-  const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
-  if (price === 0) continue;
+    const priceStr = getGTag('price');
+    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+    if (price === 0) continue;
 
-  const rawId = getGTag('id');
-  if (!rawId) continue;
+    const rawId = getGTag('id');
+    if (!rawId) continue;
 
-  const itemGroupId = getGTag('item_group_id');
-  const isVariant = itemGroupId && itemGroupId !== rawId;
-  const product_id = isVariant ? itemGroupId : rawId;
-  const subproduct_id = isVariant ? rawId : '0';
+    let product_id, subproduct_id;
+    if (forceNoVariant) {
+      product_id = rawId;
+      subproduct_id = '0';
+    } else {
+      const itemGroupId = getGTag('item_group_id');
+      const isVariant = itemGroupId && itemGroupId !== rawId;
+      product_id = isVariant ? itemGroupId : rawId;
+      subproduct_id = isVariant ? rawId : '0';
+    }
 
-  items.push({
-    product_id,
-    subproduct_id,
-    title: getTag('title'),
-    price,
-    availability: 'in stock',
-    brand: getGTag('brand'),
-    product_type: getGTag('product_type'),
-    link: getTag('link'),
-    description: getTag('description').substring(0, 300)
-  });
+    items.push({
+      product_id,
+      subproduct_id,
+      title: getTag('title'),
+      price,
+      availability: 'in stock',
+      brand: getGTag('brand'),
+      product_type: getGTag('product_type'),
+      link: getTag('link'),
+      description: getTag('description').substring(0, 300)
+    });
+  }
+  return items;
+}
+
+const products1 = parseXML(xml1, true);   // varyantsız feed
+const products2 = parseXML(xml2, false);  // varyantlı feed
+
+// Birleştir — product_id+subproduct_id çiftiyle deduplicate
+const seen = new Set();
+const merged = [];
+for (const p of [...products1, ...products2]) {
+  const key = `${p.product_id}_${p.subproduct_id}`;
+  if (!seen.has(key)) {
+    seen.add(key);
+    merged.push(p);
+  }
 }
 
 return [{
   json: {
     last_updated: new Date().toISOString(),
-    total_products: items.length,
-    products: items
+    total_products: merged.length,
+    products: merged
   }
 }];
 ```
