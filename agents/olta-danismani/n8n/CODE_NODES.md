@@ -448,6 +448,72 @@ return [{ json: result }];
 
 ---
 
+## 8. Test Modu — Mock Response (Groq Olmadan)
+**Node:** Workflow 2 → Node 11 yerini alır (test sırasında)
+
+Groq'u devre dışı bırakmak için:
+1. n8n'de Groq HTTP Request node'unu **disable** et (sağ tık → Disable)
+2. Parse Response (Node 11) kodunu bu kodla değiştir
+3. Gerçek teste geçince Groq'u tekrar enable et, Node 11'i orijinal kodla geri yükle
+
+```javascript
+const SITE_DOMAIN = 'www.sihirliolta.com';
+const filteredProducts = $('Filter Products').first().json.filtered_products || {};
+const profile = $('Filter Products').first().json.profile || {};
+
+const NON_VARIANT_CATEGORIES = ['Olta Kamışı', 'Makine'];
+
+const CATEGORY_MAP = [
+  { key: 'olta_kamisi',   label: 'Olta Kamışı' },
+  { key: 'makine',        label: 'Makine' },
+  { key: 'misina',        label: 'Misina' },
+  { key: 'lider',         label: 'Lider' },
+  { key: 'igne_aksesuar', label: 'Yem / Aksesuar' }
+];
+
+const oneriler = [];
+let toplam = 0;
+
+for (const { key, label } of CATEGORY_MAP) {
+  const list = filteredProducts[key] || [];
+  if (list.length === 0) continue;
+
+  // Rastgele ürün seç
+  const p = list[Math.floor(Math.random() * list.length)];
+  const subId = NON_VARIANT_CATEGORIES.includes(label) ? '0' : (p.subproduct_id || '0');
+
+  oneriler.push({
+    kategori: label,
+    urun_adi: p.title,
+    product_id: p.product_id,
+    subproduct_id: subId,
+    urun_linki: p.link || '',
+    fiyat: p.price,
+    eslesen_kriterler: ['[TEST MODU]'],
+    neden: 'Test modu — Groq devre dışı, rastgele seçildi.'
+  });
+  toplam += p.price;
+}
+
+const parts = oneriler
+  .map(o => `count:1;product_id:${o.product_id};subproduct_id:${o.subproduct_id}`)
+  .join('-');
+
+return [{
+  json: {
+    musteri_profili: profile,
+    oneriler,
+    toplam_fiyat: toplam,
+    sepet_linki: parts ? `https://${SITE_DOMAIN}/srv/service/cart/create-cart-from-url/${parts}` : null,
+    alternatif_sepet_linki: null,
+    dogrulanamayan_kriterler: [],
+    not: 'TEST MODU — Groq devre dışı, ürünler rastgele seçildi.'
+  }
+}];
+```
+
+---
+
 ## Notlar
 
 - Tüm scriptlerde `throw new NodeOperationError($node, mesaj)` kullanıldığında n8n workflow'u durdurur ve hata mesajını döndürür.
