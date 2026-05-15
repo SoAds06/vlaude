@@ -354,16 +354,32 @@ const SITE_DOMAIN = 'www.sihirliolta.com';
 
 const response = $input.first().json;
 
-// Groq/OpenAI, Gemini ve Anthropic yanıt formatlarını destekle
+// Gerçek ürün listesini al — Groq ID hallucination'ını düzeltmek için
+const filteredProducts = $('Filter Products').first().json.filtered_products || {};
+
+// product_id → ürün verisi lookup tablosu
+const productMap = {};
+Object.values(filteredProducts).forEach(list => {
+  list.forEach(p => { productMap[String(p.product_id)] = p; });
+});
+
+// Kategori → filtered_products anahtarı eşleşmesi
+const CAT_KEY = {
+  'Olta Kamışı': 'olta_kamisi',
+  'Makine': 'makine',
+  'Misina': 'misina',
+  'Lider': 'lider',
+  'Yem': 'igne_aksesuar'
+};
+const NON_VARIANT_CATEGORIES = ['Olta Kamışı', 'Makine'];
+
+// Groq yanıtını parse et
 let rawText = '';
 if (response.choices && response.choices[0]) {
-  // Groq / OpenAI formatı
   rawText = response.choices[0].message.content || '';
 } else if (response.candidates && response.candidates[0]) {
-  // Gemini formatı
   rawText = response.candidates[0].content.parts[0].text || '';
 } else if (response.content && response.content[0]) {
-  // Anthropic formatı
   rawText = response.content[0].text || '';
 } else if (response.text) {
   rawText = response.text;
@@ -371,10 +387,8 @@ if (response.choices && response.choices[0]) {
   rawText = JSON.stringify(response);
 }
 
-// JSON parse et (Claude bazen açıklama ekleyebilir)
 let result;
 try {
-  // Sadece JSON bloğunu bul
   const jsonMatch = rawText.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('JSON bulunamadı');
   result = JSON.parse(jsonMatch[0]);
@@ -388,11 +402,35 @@ try {
   }];
 }
 
-// Sepet linkini her zaman oneriler'deki gerçek product_id'lerden yeniden oluştur
-// LLM'in ürettiği linke güvenme — ID'leri yanlış yazabiliyor
-// Olta Kamışı ve Makine her zaman varyantsız (Feed Standard) → subproduct_id:0 zorunlu
-const NON_VARIANT_CATEGORIES = ['Olta Kamışı', 'Makine'];
+// Groq'un döndürdüğü her product_id'yi gerçek listeyle doğrula
+// Hallucinated ID → kategorideki ilk gerçek ürünle değiştir
 if (result.oneriler && result.oneriler.length > 0) {
+  result.oneriler = result.oneriler.map(o => {
+    const pid = String(o.product_id || '');
+    if (!productMap[pid]) {
+      // Hallucinated ID — gerçek listeden düzelt
+      const catKey = CAT_KEY[o.kategori];
+      const realList = catKey ? (filteredProducts[catKey] || []) : [];
+      if (realList.length > 0) {
+        const real = realList[0];
+        o.product_id = real.product_id;
+        o.subproduct_id = real.subproduct_id || '0';
+        o.urun_adi = real.title;
+        o.urun_linki = real.link || '';
+        o.fiyat = real.price;
+      }
+    } else {
+      // Gerçek ID — link ve subproduct_id'yi de güncelle
+      o.urun_linki = productMap[pid].link || o.urun_linki || '';
+    }
+    // Kamış ve Makine her zaman subproduct_id:0
+    if (NON_VARIANT_CATEGORIES.includes(o.kategori)) {
+      o.subproduct_id = '0';
+    }
+    return o;
+  });
+
+  // Sepet linkini doğrulanmış ID'lerden oluştur
   const parts = result.oneriler
     .filter(o => o.product_id && o.product_id !== 'kriter_uyumlu_urun_yok')
     .map(o => {
