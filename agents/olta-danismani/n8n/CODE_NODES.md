@@ -12,65 +12,51 @@ Node 2'nin adı "Feed Standard", Node 3'ün adı "Feed Variant" olmalı.
 // Test limiti — üretime geçince 9999 yap
 const TEST_LIMIT = 20;
 
-// XML'i ilk N item'dan sonra kes (parse süresini kısaltır)
-function truncateXML(xml, n) {
+// Feed Standard <item>, Feed Variant <entry> kullanır
+function truncateXML(xml, tag, n) {
+  const close = `</${tag}>`;
   let pos = 0;
   for (let i = 0; i < n; i++) {
-    const idx = xml.indexOf('</item>', pos);
+    const idx = xml.indexOf(close, pos);
     if (idx === -1) break;
-    pos = idx + 7;
+    pos = idx + close.length;
   }
   return pos > 0 ? xml.substring(0, pos) : xml;
 }
 
-// Feed 1: varyantsız ürünler (kamış, makine vb.)
-const xml1 = truncateXML($('Feed Standard').first().json.data, TEST_LIMIT);
-// Feed 2: varyantlı ürünler (misina, lider vb.)
-const xml2 = truncateXML($('Feed Variant').first().json.data, TEST_LIMIT);
+const xml1 = truncateXML($('Feed Standard').first().json.data, 'item', TEST_LIMIT);
+const xml2 = truncateXML($('Feed Variant').first().json.data, 'entry', TEST_LIMIT);
 
-function parseXML(xml, forceNoVariant) {
+function parseFeed(xml, rowTag, forceNoVariant) {
   const items = [];
-  const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+  const rowRegex = new RegExp(`<${rowTag}>([\\s\\S]*?)<\\/${rowTag}>`, 'g');
   let match;
-
-  while ((match = itemRegex.exec(xml)) !== null) {
+  while ((match = rowRegex.exec(xml)) !== null) {
     const item = match[1];
-
     const getTag = (tag) => {
-      const m = item.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/${tag}>|<${tag}[^>]*>([^<]*)<\/${tag}>`));
+      const m = item.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>|<${tag}[^>]*>([^<]*)<\\/${tag}>`));
       return m ? (m[1] || m[2] || '').trim() : '';
     };
-
     const getGTag = (tag) => {
-      const m = item.match(new RegExp(`<g:${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\/g:${tag}>|<g:${tag}[^>]*>([^<]*)<\/g:${tag}>`));
+      const m = item.match(new RegExp(`<g:${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/g:${tag}>|<g:${tag}[^>]*>([^<]*)<\\/g:${tag}>`));
       return m ? (m[1] || m[2] || '').trim() : '';
     };
 
-    const availability = getGTag('availability');
-    if (availability !== 'in stock' && availability !== 'in_stock') continue;
-
-    const priceStr = getGTag('price');
-    const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+    const availability = getGTag('availability').toLowerCase().replace(' ', '_');
+    if (availability !== 'in_stock') continue;
+    const price = parseFloat(getGTag('price').replace(/[^0-9.]/g, '')) || 0;
     if (price === 0) continue;
-
     const rawId = getGTag('id');
     if (!rawId) continue;
 
     let product_id, subproduct_id;
-    if (forceNoVariant) {
-      // Feed Standard (kamış, makine): ID tiresiz, subproduct_id her zaman 0
+    if (forceNoVariant || !rawId.includes('-')) {
       product_id = rawId;
       subproduct_id = '0';
     } else {
-      // Feed Variant (misina, lider): ID formatı "productId-subproductId"
-      if (rawId.includes('-')) {
-        const dashIdx = rawId.indexOf('-');
-        product_id = rawId.substring(0, dashIdx).trim();
-        subproduct_id = rawId.substring(dashIdx + 1).trim();
-      } else {
-        product_id = rawId;
-        subproduct_id = '0';
-      }
+      const dash = rawId.indexOf('-');
+      product_id = rawId.substring(0, dash).trim();
+      subproduct_id = rawId.substring(dash + 1).trim();
     }
 
     items.push({
@@ -89,27 +75,17 @@ function parseXML(xml, forceNoVariant) {
   return items;
 }
 
-const products1 = parseXML(xml1, true);   // varyantsız feed
-const products2 = parseXML(xml2, false);  // varyantlı feed
+const products1 = parseFeed(xml1, 'item', true);   // Feed Standard — kamış, makine
+const products2 = parseFeed(xml2, 'entry', false); // Feed Variant  — jig, misina, lider vb.
 
-// Birleştir — product_id+subproduct_id çiftiyle deduplicate
 const seen = new Set();
 const merged = [];
 for (const p of [...products1, ...products2]) {
   const key = `${p.product_id}_${p.subproduct_id}`;
-  if (!seen.has(key)) {
-    seen.add(key);
-    merged.push(p);
-  }
+  if (!seen.has(key)) { seen.add(key); merged.push(p); }
 }
 
-return [{
-  json: {
-    last_updated: new Date().toISOString(),
-    total_products: merged.length,
-    products: merged
-  }
-}];
+return [{ json: { last_updated: new Date().toISOString(), total_products: merged.length, products: merged } }];
 ```
 
 ---
