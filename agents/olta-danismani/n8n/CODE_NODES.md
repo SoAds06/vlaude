@@ -12,7 +12,7 @@ Node 2'nin adı "Feed Standard", Node 3'ün adı "Feed Variant" olmalı.
 // Feed 1: varyantsız ürünler (kamış, makine vb.)
 const xml1 = $('Feed Standard').first().json.data;
 // Feed 2: varyantlı ürünler (misina, lider vb.)
-const xml2 = $input.first().json.data;
+const xml2 = $('Feed Variant').first().json.data;
 
 function parseXML(xml, forceNoVariant) {
   const items = [];
