@@ -44,13 +44,19 @@ function parseXML(xml, forceNoVariant) {
 
     let product_id, subproduct_id;
     if (forceNoVariant) {
+      // Feed Standard (kamış, makine): ID tiresiz, subproduct_id her zaman 0
       product_id = rawId;
       subproduct_id = '0';
     } else {
-      const itemGroupId = getGTag('item_group_id');
-      const isVariant = itemGroupId && itemGroupId !== rawId;
-      product_id = isVariant ? itemGroupId : rawId;
-      subproduct_id = isVariant ? rawId : '0';
+      // Feed Variant (misina, lider): ID formatı "productId-subproductId"
+      if (rawId.includes('-')) {
+        const dashIdx = rawId.indexOf('-');
+        product_id = rawId.substring(0, dashIdx).trim();
+        subproduct_id = rawId.substring(dashIdx + 1).trim();
+      } else {
+        product_id = rawId;
+        subproduct_id = '0';
+      }
     }
 
     items.push({
