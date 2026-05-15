@@ -384,10 +384,15 @@ try {
 
 // Sepet linkini her zaman oneriler'deki gerçek product_id'lerden yeniden oluştur
 // LLM'in ürettiği linke güvenme — ID'leri yanlış yazabiliyor
+// Olta Kamışı ve Makine her zaman varyantsız (Feed Standard) → subproduct_id:0 zorunlu
+const NON_VARIANT_CATEGORIES = ['Olta Kamışı', 'Makine'];
 if (result.oneriler && result.oneriler.length > 0) {
   const parts = result.oneriler
     .filter(o => o.product_id && o.product_id !== 'kriter_uyumlu_urun_yok')
-    .map(o => `count:1;product_id:${o.product_id};subproduct_id:${o.subproduct_id || '0'}`)
+    .map(o => {
+      const subId = NON_VARIANT_CATEGORIES.includes(o.kategori) ? '0' : (o.subproduct_id || '0');
+      return `count:1;product_id:${o.product_id};subproduct_id:${subId}`;
+    })
     .join('-');
   if (parts) {
     result.sepet_linki = `https://${SITE_DOMAIN}/srv/service/cart/create-cart-from-url/${parts}`;
