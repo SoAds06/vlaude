@@ -19,7 +19,7 @@ function parseXML(xml, forceNoVariant) {
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let match;
 
-  while ((match = itemRegex.exec(xml)) !== null) {
+  while ((match = itemRegex.exec(xml)) !== null && items.length < 20) {
     const item = match[1];
 
     const getTag = (tag) => {
