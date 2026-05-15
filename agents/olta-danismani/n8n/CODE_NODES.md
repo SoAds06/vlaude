@@ -9,17 +9,31 @@ Her script kendi node'una kopyala-yapıştır. n8n'de "Code" node, JavaScript ku
 Node 2'nin adı "Feed Standard", Node 3'ün adı "Feed Variant" olmalı.
 
 ```javascript
+// Test limiti — üretime geçince 9999 yap
+const TEST_LIMIT = 20;
+
+// XML'i ilk N item'dan sonra kes (parse süresini kısaltır)
+function truncateXML(xml, n) {
+  let pos = 0;
+  for (let i = 0; i < n; i++) {
+    const idx = xml.indexOf('</item>', pos);
+    if (idx === -1) break;
+    pos = idx + 7;
+  }
+  return pos > 0 ? xml.substring(0, pos) : xml;
+}
+
 // Feed 1: varyantsız ürünler (kamış, makine vb.)
-const xml1 = $('Feed Standard').first().json.data;
+const xml1 = truncateXML($('Feed Standard').first().json.data, TEST_LIMIT);
 // Feed 2: varyantlı ürünler (misina, lider vb.)
-const xml2 = $('Feed Variant').first().json.data;
+const xml2 = truncateXML($('Feed Variant').first().json.data, TEST_LIMIT);
 
 function parseXML(xml, forceNoVariant) {
   const items = [];
   const itemRegex = /<item>([\s\S]*?)<\/item>/g;
   let match;
 
-  while ((match = itemRegex.exec(xml)) !== null && items.length < 20) {
+  while ((match = itemRegex.exec(xml)) !== null) {
     const item = match[1];
 
     const getTag = (tag) => {
