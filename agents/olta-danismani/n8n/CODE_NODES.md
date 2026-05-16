@@ -168,8 +168,12 @@ return $input.all();
 **Node:** Workflow 2 → Node 5
 
 ```javascript
-const indexContent = $input.first().json.data;
+const indexContent = $input.first().json.data || '';
 const profile = $('Form to Agent JSON').first().json;
+
+if (!indexContent) {
+  return [{ json: { matched_blogs: [], profile } }];
+}
 
 // Tablo satırlarını parse et
 const lines = indexContent
@@ -243,16 +247,17 @@ return [{ json: { matched_file: bestMatch, profile } }];
 **Node:** Workflow 2 → Node 7
 
 ```javascript
-const blogContent = $input.first().json.data;
+const blogContent = $input.first().json.data || '';
 
-// "## Ürün Seçim Kriterleri" bölümünü çıkar
-// Şablon: bu bölüm frontmatter'dan hemen sonra, "---" ayırıcısından önce
+if (!blogContent) {
+  return [{ json: { criteria_text: '' } }];
+}
+
 const startMarker = '## Ürün Seçim Kriterleri';
 const endMarker = '\n---\n';
 
 const start = blogContent.indexOf(startMarker);
 if (start === -1) {
-  // Eski format: bölüm dosyanın sonundaysa
   return [{ json: { criteria_text: blogContent } }];
 }
 
